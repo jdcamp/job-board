@@ -1,154 +1,203 @@
 <?php
 
-function job_schema() {
+function job_schema()
+{
   $schema['division'] = array(
     'description' => t('The table for division information.'),
     'fields' => array(
       'nid' => array(
         'description' => t('The primary identifier for a node.'),
         'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE),
+        'unsigned' => true,
+        'not null' => true
+      ),
       'vid' => array(
         'description' => t('The current {node_revisions}.vid version identifier.'),
         'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0),
+        'unsigned' => true,
+        'not null' => true,
+        'default' => 0
+      ),
       'description' => array(
         'description' => t('Description of division.'),
         'type' => 'text',
-        'not null' => TRUE,
-        'size' => 'big'),
+        'not null' => true,
+        'size' => 'big'
+      ),
       'description_format' => array(
         'description' => t('Format of Description of division.'),
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
-        'default' => ''),
+        'not null' => true,
+        'default' => ''
+      ),
       'phone' => array(
         'description' => t('Phone Number of division.'),
         'type' => 'varchar',
         'length' => 32,
-        'not null' => TRUE,
-        'default' => ''),
+        'not null' => true,
+        'default' => ''
+      ),
       'email' => array(
         'description' => t('Email of division.'),
         'type' => 'varchar',
         'length' => 128,
-        'not null' => TRUE,
-        'default' => ''),
+        'not null' => true,
+        'default' => ''
+      ),
       'website' => array(
         'description' => t('Website URL of division.'),
         'type' => 'varchar',
         'length' => 128,
-        'not null' => TRUE,
-        'default' => ''),
-      'person'  => array(
+        'not null' => true,
+        'default' => ''
+      ),
+      'person' => array(
         'description' => t('Contact Person.'),
         'type' => 'varchar',
         'length' => 64,
-        'not null' => TRUE,
-        'default' => ''),
-      ),
+        'not null' => true,
+        'default' => ''
+      )
+    ),
     'indexes' => array(
-      'phone' => array('phone'),
-      ),
+      'phone' => array(
+        'phone'
+      )
+    ),
     'unique keys' => array(
-      'nid_vid' => array('nid', 'vid'),
-      'vid'     => array('vid')
+      'nid_vid' => array(
+        'nid',
+        'vid'
       ),
-    'primary key' => array('nid'),
+      'vid' => array(
+        'vid'
+      )
+    ),
+    'primary key' => array(
+      'nid'
+    )
   );
-  $schema['job'] = array(
+  $schema['job']      = array(
     'description' => t('The table for job posts.'),
     'fields' => array(
-//node id for each job
+      //node id for each job
       'nid' => array(
         'description' => t('The primary identifier for a node.'),
         'type' => 'serial',
-        'unsigned' => TRUE,
-        'not null' => TRUE),
-//revision id
+        'unsigned' => true,
+        'not null' => true
+      ),
+      //revision id
       'vid' => array(
         'description' => t('The current {node_revisions}.vid version identifier.'),
         'type' => 'int',
-        'unsigned' => TRUE,
-        'not null' => TRUE,
-        'default' => 0),
+        'unsigned' => true,
+        'not null' => true,
+        'default' => 0
+      ),
       'division' => array(
-//id based what division posted the job
+        //id based what division posted the job
         'description' => t('division ID.'),
         'type' => 'int',
-        'unsigned' => TRUE),
-//job requirements
+        'unsigned' => true
+      ),
+      //job requirements
       'requirement' => array(
         'description' => t('Job Requirement.'),
         'type' => 'text',
-        'not null' => TRUE,
-        'size' => 'big'),
+        'not null' => true,
+        'size' => 'big'
+      ),
       'requirement_format' => array(
         'description' => t('Format of Description of division.'),
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
-        'default' => ''),
-//Job description
+        'not null' => true,
+        'default' => ''
+      ),
+      //Job description
       'description' => array(
         'description' => t('Job Description.'),
         'type' => 'text',
-        'not null' => TRUE,
-        'size' => 'big'),
+        'not null' => true,
+        'size' => 'big'
+      ),
       'description_format' => array(
         'description' => t('Format of Description of division.'),
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
-        'default' => ''),
+        'not null' => true,
+        'default' => ''
+      ),
+      'location' => array(
+        'description' => t('Job Location'),
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => true,
+        'default' => ''
+      ),
       'application' => array(
         'description' => t('Job Application.'),
         'type' => 'text',
-        'not null' => TRUE,
-        'size' => 'big'),
+        'not null' => true,
+        'size' => 'big'
+      ),
       'application_format' => array(
         'description' => t('Format of Description of division.'),
         'type' => 'varchar',
         'length' => 255,
-        'not null' => TRUE,
-        'default' => ''),
-      ),
+        'not null' => true,
+        'default' => ''
+      )
+    ),
     'indexes' => array(
-      'division' => array('division'),
-      ),
+      'division' => array(
+        'division'
+      )
+    ),
     'unique keys' => array(
-      'nid_vid' => array('nid', 'vid'),
-      'vid'     => array('vid')
+      'nid_vid' => array(
+        'nid',
+        'vid'
       ),
-    'primary key' => array('nid'),
+      'vid' => array(
+        'vid'
+      )
+    ),
+    'primary key' => array(
+      'nid'
+    )
   );
   return $schema;
 }
 
-function job_install() {
+function job_install()
+{
   variable_set("comment_division", 1);
   variable_set("comment_job", 1);
-  variable_set("node_options_division", array("status"));
-  variable_set("node_options_job", array("status"));
+  variable_set("node_options_division", array(
+    "status"
+  ));
+  variable_set("node_options_job", array(
+    "status"
+  ));
 }
 
-function job_enable() {
+function job_enable()
+{
   field_associate_fields('taxonomy');
 
   // Create the division vocabulary if it does not exist.
   $vocabulary = taxonomy_vocabulary_load(variable_get('job_vocabulary_divisioncategory', 0));
   if (!$vocabulary) {
-    $edit = array(
+    $edit       = array(
       'name' => t('division Category'),
       'machine_name' => 'division_category',
       'description' => t('Category of Division'),
       'hierarchy' => 1,
       'module' => 'job',
-      'weight' => -10,
+      'weight' => -10
     );
     $vocabulary = (object) $edit;
     taxonomy_vocabulary_save($vocabulary);
@@ -161,9 +210,9 @@ function job_enable() {
           array(
             'vocabulary' => $vocabulary->machine_name,
             'parent' => 0
-          ),
-        ),
-      ),
+          )
+        )
+      )
     );
     field_create_field($field);
     $instance = array(
@@ -176,8 +225,12 @@ function job_enable() {
         'type' => 'options_select'
       ),
       'display' => array(
-        'default' => array('label' => 'inline'),
-        'teaser' => array('type' => 'hidden')
+        'default' => array(
+          'label' => 'inline'
+        ),
+        'teaser' => array(
+          'type' => 'hidden'
+        )
       )
     );
     field_create_instance($instance);
@@ -186,13 +239,13 @@ function job_enable() {
   // Create the location vocabulary if it does not exist.
   $vocabulary = taxonomy_vocabulary_load(variable_get('job_vocabulary_divisionlocation', 0));
   if (!$vocabulary) {
-    $edit = array(
+    $edit       = array(
       'name' => t('Division Location'),
       'machine_name' => 'division_location',
       'description' => t('Location of division'),
       'hierarchy' => 1,
       'module' => 'job',
-      'weight' => -10,
+      'weight' => -10
     );
     $vocabulary = (object) $edit;
     taxonomy_vocabulary_save($vocabulary);
@@ -205,9 +258,9 @@ function job_enable() {
           array(
             'vocabulary' => $vocabulary->machine_name,
             'parent' => 0
-          ),
-        ),
-      ),
+          )
+        )
+      )
     );
     field_create_field($field);
     $instance = array(
@@ -220,8 +273,12 @@ function job_enable() {
         'type' => 'options_select'
       ),
       'display' => array(
-        'default' => array('label' => 'inline'),
-        'teaser' => array('type' => 'hidden')
+        'default' => array(
+          'label' => 'inline'
+        ),
+        'teaser' => array(
+          'type' => 'hidden'
+        )
       )
     );
     field_create_instance($instance);
@@ -230,13 +287,13 @@ function job_enable() {
   // Create the job type vocabulary if it does not exist.
   $vocabulary = taxonomy_vocabulary_load(variable_get('job_vocabulary_jobtype', 0));
   if (!$vocabulary) {
-    $edit = array(
+    $edit       = array(
       'name' => t('Job Type'),
       'machine_name' => 'job_type',
       'description' => t('Type of job'),
       'hierarchy' => 1,
       'module' => 'job',
-      'weight' => -10,
+      'weight' => -10
     );
     $vocabulary = (object) $edit;
     taxonomy_vocabulary_save($vocabulary);
@@ -249,9 +306,9 @@ function job_enable() {
           array(
             'vocabulary' => $vocabulary->machine_name,
             'parent' => 0
-          ),
-        ),
-      ),
+          )
+        )
+      )
     );
     field_create_field($field);
     $instance = array(
@@ -264,19 +321,29 @@ function job_enable() {
         'type' => 'options_select'
       ),
       'display' => array(
-        'default' => array('label' => 'inline'),
-        'teaser' => array('type' => 'hidden')
+        'default' => array(
+          'label' => 'inline'
+        ),
+        'teaser' => array(
+          'type' => 'hidden'
+        )
       )
     );
     field_create_instance($instance);
     // Add Permanent, Part Time, Contract to this vocabulary.
-    $type = array('Permanent','Part Time','Contract');
+    $type = array(
+      'Permanent',
+      'Part Time',
+      'Contract'
+    );
     foreach ($type as $name) {
       $edit = array(
         'name' => t($name),
         'description' => '',
-        'parent' => array(0),
-        'vid' => $vocabulary->vid,
+        'parent' => array(
+          0
+        ),
+        'vid' => $vocabulary->vid
       );
       $term = (object) $edit;
       taxonomy_term_save($term);
@@ -286,13 +353,13 @@ function job_enable() {
   // Create the job category vocabulary if it does not exist.
   $vocabulary = taxonomy_vocabulary_load(variable_get('job_vocabulary_jobcategory', 0));
   if (!$vocabulary) {
-    $edit = array(
+    $edit       = array(
       'name' => t('Job Category'),
       'machine_name' => 'job_category',
       'description' => t('Category of job'),
       'hierarchy' => 1,
       'module' => 'job',
-      'weight' => -10,
+      'weight' => -10
     );
     $vocabulary = (object) $edit;
     taxonomy_vocabulary_save($vocabulary);
@@ -305,9 +372,9 @@ function job_enable() {
           array(
             'vocabulary' => $vocabulary->machine_name,
             'parent' => 0
-          ),
-        ),
-      ),
+          )
+        )
+      )
     );
     field_create_field($field);
     $instance = array(
@@ -320,23 +387,45 @@ function job_enable() {
         'type' => 'options_select'
       ),
       'display' => array(
-        'default' => array('label' => 'inline'),
-        'teaser' => array('type' => 'hidden')
+        'default' => array(
+          'label' => 'inline'
+        ),
+        'teaser' => array(
+          'type' => 'hidden'
+        )
       )
     );
     field_create_instance($instance);
     // Add suggested job category to this vocabulary.
-    $category = array('Accounting', 'Admin & Clerical', 'Banking & Finance', 'Building & Architectural', 'Business Development',
-      'Customer Service', 'Design', 'Education', 'Engineering', 'Human Resources',
-      'Information Technology', 'Insurance', 'Legal', 'Logistics', 'Manufacturing', 'Marketing & Public Relations',
-      'Media', 'Medical & Pharmaceutical', 'Property & Real Estate', 'Purchasing', 'Sales', 'Translation',
-      'Transportation & Shipping', 'Other');
+    $category = array(
+      'Accounting',
+      'Admin & Clerical',
+      'Banking & Finance',
+      'Business Development',
+      'Customer Service',
+      'Education',
+      'Engineering',
+      'Human Resources',
+      'Information Technology',
+      'Insurance',
+      'Legal',
+      'Logistics',
+      'Manufacturing',
+      'Marketing & Public Relations',
+      'Media',
+      'Medical & Pharmaceutical',
+      'Translation',
+      'Transportation & Shipping',
+      'Other'
+    );
     foreach ($category as $name) {
       $edit = array(
         'name' => t($name),
         'description' => '',
-        'parent' => array(0),
-        'vid' => $vocabulary->vid,
+        'parent' => array(
+          0
+        ),
+        'vid' => $vocabulary->vid
       );
       $term = (object) $edit;
       taxonomy_term_save($term);
