@@ -1,86 +1,7 @@
 <?php
 /**
-*implement hook_help
+* implement hook_menu
 */
-function job_help($path, $arg)
-{
-  $output = '';
-  switch ($path) {
-    case "admin/help#job":
-      $output = '<p>' . t("Creates a job board") . '</p>';
-      break;
-  }
-  return $output;
-}
-/**
-*implement hook_block_info
-*/
-function job_block_info()
-{
-//creates block to display the lastest job postings
-  $blocks['job_latest']   = array(
-    'info' => t('Latest jobs'),
-    'cache' => DRUPAL_CACHE_GLOBAL
-  );
-//creates block to display a list of job categories
-  $blocks['job_category'] = array(
-    'info' => t('Job Categories'),
-    'cache' => DRUPAL_CACHE_GLOBAL
-  );
-  return $blocks;
-}
-//get the lastet job postings
-function job_latest_posts($display)
-{
-//set global variable for max number of jobs to be listed
-  $max_num = variable_get('latest_job_max', 5);
-//gets latest job nodes
-  $query   = db_select('node', 'n')->fields('n', array(
-    'nid',
-    'title',
-    'created'
-  ))->condition('status', 1)->condition('type', 'job')->orderBy('created', 'DESC');
-  if ($display == 'block') {
-    $query->range(0, $max_num);
-  }
-  return $query->execute();
-}
-//create block to view lastest job postings
-function job_block_view($delta = '')
-{
-  switch ($delta) {
-    case 'job_latest':
-      $block['subject'] = t('Latest Jobs');
-      if (user_access('access content')) {
-        $result = job_latest_posts('block');
-        $items  = array();
-        foreach ($result as $node) {
-          $items[] = array(
-            'data' => l($node->title, 'node/' . $node->nid)
-          );
-        }
-        //No postings found
-        if (empty($items)) {
-          $block['content'] = t('No job posts available.');
-        } else {
-          $block['content']['posts'] = array(
-            '#theme' => 'item_list__job__block',
-            '#items' => $items
-          );
-          //create link to <drupal root url>/job
-          $block['content']['more']  = array(
-            '#theme' => 'more_link__job',
-            '#url' => 'job',
-            '#title' => t('More')
-          );
-        }
-      }
-      return $block;
-  }
-}
-/**
- * implement hook_menu
- */
 function job_menu()
 {
   $items                             = array();
@@ -128,19 +49,87 @@ function job_menu()
       'access content'
     ),
     'type' => MENU_SUGGESTED_ITEM
+    );
+    return $items;
+  }
+/**
+*implement hook_help
+*/
+function job_help($path, $arg)
+{
+  $output = '';
+  switch ($path) {
+    case "admin/help#job":
+      $output = '<p>' . t("Creates a job board") . '</p>';
+      break;
+  }
+  return $output;
+}
+/**
+*implement hook_block_info
+*/
+function job_block_info()
+{
+//creates block to display the lastest job postings
+  $blocks['job_latest']   = array(
+    'info' => t('Latest jobs'),
+    'cache' => DRUPAL_CACHE_GLOBAL
   );
-  $items['job/category/%/feed']      = array(
-    'description' => 'List of Job Post in feed',
-    'page callback' => 'job_list_job_feed',
-    'page arguments' => array(
-      2
-    ),
-    'access arguments' => array(
-      'access job content'
-    ),
-    'type' => MENU_SUGGESTED_ITEM
+//creates block to display a list of job categories
+  $blocks['job_category'] = array(
+    'info' => t('Job Categories'),
+    'cache' => DRUPAL_CACHE_GLOBAL
   );
-  return $items;
+  return $blocks;
+}
+//create block to view lastest job postings
+function job_block_view($delta = '')
+{
+  switch ($delta) {
+    case 'job_latest':
+    $block['subject'] = t('Latest Jobs');
+    if (user_access('access content')) {
+      $result = job_latest_posts('block');
+      $items  = array();
+      foreach ($result as $node) {
+        $items[] = array(
+          'data' => l($node->title, 'node/' . $node->nid)
+        );
+      }
+      //No postings found
+      if (empty($items)) {
+        $block['content'] = t('No job posts available.');
+      } else {
+        $block['content']['posts'] = array(
+          '#theme' => 'item_list__job__block',
+          '#items' => $items
+        );
+        //create link to <drupal root url>/job
+        $block['content']['more']  = array(
+          '#theme' => 'more_link__job',
+          '#url' => 'job',
+          '#title' => t('More')
+        );
+      }
+    }
+    return $block;
+  }
+}
+//get the lastet job postings
+function job_latest_posts($display)
+{
+//set global variable for max number of jobs to be listed
+  $max_num = variable_get('latest_job_max', 5);
+//gets latest job nodes
+  $query   = db_select('node', 'n')->fields('n', array(
+    'nid',
+    'title',
+    'created'
+  ))->condition('status', 1)->condition('type', 'job')->orderBy('created', 'DESC');
+  if ($display == 'block') {
+    $query->range(0, $max_num);
+  }
+  return $query->execute();
 }
 
 function job_admin_form($form, &$form_state)
@@ -161,9 +150,9 @@ function job_admin_form_validate($form, &$form_state)
 {
   $max_num = $form_state['values']['latest_job_max'];
   if (!is_numeric($max_num)) {
-    form_set_error('latest_job_max', t('You must enter a number for the maximum number of job posts to display.'));
+    form_set_error('latest_job_max', t('Must be a valid number'));
   } else if ($max_num <= 0) {
-    form_set_error('latest_job_max', t('Maximum number of job posts to display must be positive.'));
+    form_set_error('latest_job_max', t('Maximum number of job listings must be positive.'));
   }
 }
 //set permissions
@@ -421,6 +410,7 @@ function job_list_all_page()
   $list   = _job_list_category();
   while ($category = $list->fetchObject()) {
     $jobs           = job_list_job_page($category->tid);
+    //The format of the string that outputs when no jobs are posted in that category
     $no_jobs_string = '<div><p>There are currently no jobs in this category.</p></div>';
     if ($jobs == $no_jobs_string) {
     } else {
@@ -505,7 +495,7 @@ function job_list_job_page($cids, $page = 0)
       $output .= "<table>\n<tr><th>Date</th><th>Title</th><th>Location</th></tr>\n";
       $has_rows = TRUE;
     }
-    $postdate = format_date($job->created, 'custom', 'd/m/y');
+    $postdate = format_date($job->created, 'custom', 'm/d/y');
     $node = node_load($job->nid);
     $location = $node->location;
     if ($location != NULL) {
@@ -532,24 +522,6 @@ function job_list_job_page($cids, $page = 0)
   }
   $output .= '</div>';
   return $output;
-}
-
-function job_list_job_feed($cids)
-{
-  $categoryname     = _job_list_category($cids)->fetchObject()->name;
-  $num_per_page     = variable_get('job_num_per_page', 10);
-  $list             = _job_list($cids, $num_per_page);
-  $channel['link']  = url('job/category/' . $cids . '/', array(
-    'absolute' => TRUE
-  ));
-  $channel['title'] = variable_get('site_name', 'Drupal') . ' - ' . t('Job Posts in !cat', array(
-    '!cat' => $categoryname
-  ));
-  $items            = array();
-  while ($job = $list->fetchObject()) {
-    $items[] = $job->nid;
-  }
-  node_feed($items, $channel);
 }
 
 function job_node_view_alter(&$build)

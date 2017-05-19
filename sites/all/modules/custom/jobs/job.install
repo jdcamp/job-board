@@ -236,7 +236,7 @@ function job_enable()
     field_create_instance($instance);
   }
 
-  // Create the location vocabulary if it does not exist.
+// Create the location vocabulary if it does not exist.
   $vocabulary = taxonomy_vocabulary_load(variable_get('job_vocabulary_divisionlocation', 0));
   if (!$vocabulary) {
     $edit       = array(
@@ -284,7 +284,7 @@ function job_enable()
     field_create_instance($instance);
   }
 
-  // Create the job type vocabulary if it does not exist.
+// Create the job type vocabulary if it does not exist.
   $vocabulary = taxonomy_vocabulary_load(variable_get('job_vocabulary_jobtype', 0));
   if (!$vocabulary) {
     $edit       = array(
@@ -396,7 +396,7 @@ function job_enable()
       )
     );
     field_create_instance($instance);
-    // Add suggested job category to this vocabulary.
+//Create Job Category vocabulary.
     $category = array(
       'Accounting',
       'Admin & Clerical',
